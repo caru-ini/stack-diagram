@@ -28,7 +28,9 @@ UA = {"User-Agent": "Mozilla/5.0 (stack-diagram-skill)"}
 STORE = pathlib.Path.home() / ".config" / "stack-diagram" / "gallery.json"
 LOGIN_RE = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?")
 ICON_PREFIXES = ("https://svgl.app/library/", "https://cdn.jsdelivr.net/gh/gilbarbara/logos/logos/",
-                 "https://raw.githubusercontent.com/devicons/devicon/master/icons/")
+                 "https://raw.githubusercontent.com/devicons/devicon/master/icons/",
+                 "https://raw.githubusercontent.com/kubernetes/community/",
+                 "https://raw.githubusercontent.com/cncf/artwork/")
 MAX_SIDE, MAX_PIXELS, MAX_BITS = 4000, 8_000_000, 26   # a 27+ bit challenge outlives its 10 minutes
 
 def usage():

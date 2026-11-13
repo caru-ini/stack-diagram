@@ -12,6 +12,7 @@ Spec forms:
   name:gcp/Product  -> official Google Cloud icon (e.g. run:gcp/Cloud-Run)
   name:azure/Service -> official Azure icon  (e.g. vault:azure/Key-Vaults)
   name:k8s/Resource -> official Kubernetes icon (e.g. pod:k8s/pod, web:k8s/deployment, lb:k8s/ingress)
+  name:cncf/Project -> official CNCF project icon (e.g. cilium:cncf/cilium, argo:cncf/argo, otel:cncf/opentelemetry)
 
 Sources tried in order:
   1. svgl              api.svgl.app?search={s} -> route (light variant when split)
@@ -33,6 +34,9 @@ azure/ specs and the slugs azure, microsoft-azure and azure-* do the same with M
 k8s/ specs and the slugs k8s-* and kubernetes-* read official Kubernetes community
 icons (github.com/kubernetes/community/tree/master/icons). The slugs k8s and kubernetes
 fetch the Kubernetes mark through the chain.
+
+cncf/ specs and the slugs cncf-* read official CNCF project artwork
+(github.com/cncf/artwork). Known CNCF projects also fall back to CNCF artwork before third-party icon sets.
 
 svgl is matched by normalized title equality (search is fuzzy — a loose match would
 silently ship the wrong brand's logo, so non-exact hits fall through to next source).
@@ -195,6 +199,48 @@ K8S_ALIASES = {
     "user": "user", "users": "user",
     "group": "group", "groups": "group",
     "master": "controlplane",
+}
+CNCF_ICON_BASE = "https://raw.githubusercontent.com/cncf/artwork/bffd512a8b625f15cf5f8e0427469380b5768e90/projects/"
+CNCF_PROJECTS = {
+    "antrea": ("antrea", "antrea-icon"),
+    "argo": ("argo", "argo-icon"),
+    "argocd": ("argo", "argo-icon"),
+    "backstage": ("backstage", "backstage-icon"),
+    "certmanager": ("cert-manager", "cert-manager-icon"),
+    "cilium": ("cilium", "cilium_icon"),
+    "cloudevents": ("cloudevents", "cloudevents-icon"),
+    "cni": ("cni", "cni-icon"),
+    "containerd": ("containerd", "containerd-icon"),
+    "coredns": ("coredns", "coredns-icon"),
+    "cortex": ("cortex", "cortex-icon"),
+    "crossplane": ("crossplane", "crossplane-icon"),
+    "dapr": ("dapr", "dapr-icon"),
+    "envoy": ("envoy", "envoy-icon"),
+    "etcd": ("etcd", "etcd-icon"),
+    "falco": ("falco", "falco-icon"),
+    "fluentd": ("fluentd", "fluentd-icon"),
+    "flux": ("flux", "flux-icon"),
+    "fluxcd": ("flux", "flux-icon"),
+    "gatekeeper": ("open-policy-agent", "opa-icon"),
+    "harbor": ("harbor", "harbor-icon"),
+    "helm": ("helm", "helm-icon"),
+    "jaeger": ("jaeger", "jaeger-icon"),
+    "keda": ("keda", "keda-icon"),
+    "linkerd": ("linkerd", "linkerd-icon"),
+    "longhorn": ("longhorn", "longhorn-icon"),
+    "opa": ("open-policy-agent", "opa-icon"),
+    "openpolicyagent": ("open-policy-agent", "opa-icon"),
+    "opentelemetry": ("opentelemetry", "opentelemetry-icon"),
+    "otel": ("opentelemetry", "opentelemetry-icon"),
+    "prometheus": ("prometheus", "prometheus-icon"),
+    "prom": ("prometheus", "prometheus-icon"),
+    "rook": ("rook", "rook-icon"),
+    "spiffe": ("spiffe", "spiffe-icon"),
+    "spire": ("spire", "spire-icon"),
+    "strimzi": ("strimzi", "strimzi-icon"),
+    "tekton": ("tekton", "tekton-icon"),
+    "thanos": ("thanos", "thanos-icon"),
+    "vitess": ("vitess", "vitess-icon"),
 }
 PACKAGES = {}
 
@@ -373,6 +419,20 @@ def k8s_sources(query):
     print(f"Kubernetes {query!r} is not an icon name. Names: {', '.join(sorted({*index, *K8S_ALIASES}))}")
     return []
 
+def cncf_sources(query):
+    query = (query or "").strip()
+    if not query:
+        return []
+    key = norm(query)
+    hit = CNCF_PROJECTS.get(key)
+    if hit:
+        proj, base = hit
+        color = f"{CNCF_ICON_BASE}{proj}/icon/color/{base}-color.svg"
+        white = f"{CNCF_ICON_BASE}{proj}/icon/white/{base}-white.svg"
+        return [("cncf", color, white)]
+    print(f"CNCF {query!r} is not an icon name. Names: {', '.join(sorted(CNCF_PROJECTS))}")
+    return []
+
 def sources(slug):
     # concept icons: slug "lucide/<icon-name>" -> Lucide line icon (browse: lucide.dev/icons)
     if slug.startswith("lucide/"):
@@ -393,12 +453,19 @@ def sources(slug):
     k8s = re.fullmatch(r"(?:k8s|kubernetes)[/-](.+)", slug, re.IGNORECASE)
     if k8s:
         return k8s_sources(k8s.group(1))
+    cncf = re.fullmatch(r"cncf[/-](.+)", slug, re.IGNORECASE)
+    if cncf:
+        return cncf_sources(cncf.group(1))
+    if slug[:5].lower() == "cncf-":
+        return cncf_sources(slug[5:])
     if norm(slug) in ("gcp", "googlecloudplatform"):
         slug = "google-cloud"
     gcp = re.fullmatch(r"(?:gcp/|gcp-|google-cloud-)(.+)", slug, re.IGNORECASE)
     if gcp:
         return gcp_sources(gcp.group(1))
     out = []
+    if norm(slug) in CNCF_PROJECTS:
+        out.extend(cncf_sources(slug))
     svgl = svgl_lookup(slug)
     if svgl:
         out.append(("svgl", *svgl))
