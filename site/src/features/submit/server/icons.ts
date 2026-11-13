@@ -9,6 +9,8 @@ export const ICON_PREFIXES = [
   "https://svgl.app/library/",
   "https://cdn.jsdelivr.net/gh/gilbarbara/logos/logos/",
   "https://raw.githubusercontent.com/devicons/devicon/master/icons/",
+  "https://raw.githubusercontent.com/kubernetes/community/",
+  "https://raw.githubusercontent.com/cncf/artwork/",
 ] as const;
 
 export const MAX_ICON_FETCHES = 24;
