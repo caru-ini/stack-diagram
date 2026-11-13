@@ -35,11 +35,13 @@ function serve(respond: (url: string) => Response) {
 }
 
 describe("allowedIconUrl", () => {
-  it("takes https URLs under the three prefixes", () => {
+  it("takes https URLs under the curated prefixes", () => {
     for (const url of [
       "https://svgl.app/library/hono.svg",
       "https://cdn.jsdelivr.net/gh/gilbarbara/logos/logos/vercel-icon.svg",
       "https://raw.githubusercontent.com/devicons/devicon/master/icons/go/go-original.svg",
+      "https://raw.githubusercontent.com/kubernetes/community/master/icons/svg/resources/unlabeled/pod.svg",
+      "https://raw.githubusercontent.com/cncf/artwork/master/projects/cilium/icon/color/cilium_icon-color.svg",
     ]) {
       expect(allowedIconUrl(url)).toBe(url);
     }
