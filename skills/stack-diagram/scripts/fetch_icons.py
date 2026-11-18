@@ -42,7 +42,7 @@ icons (github.com/kubernetes/community/tree/master/icons). The slugs k8s and kub
 fetch the Kubernetes mark through the chain.
 
 cncf/ specs and the slugs cncf-* read official CNCF project artwork
-(github.com/cncf/artwork). Known CNCF projects also fall back to CNCF artwork before third-party icon sets.
+(github.com/cncf/artwork). Bare names in CNCF_PROJECTS try CNCF artwork first, before the chain.
 
 svgl is matched by normalized title equality (search is fuzzy — a loose match would
 silently ship the wrong brand's logo, so non-exact hits fall through to next source).
@@ -501,8 +501,6 @@ def sources(slug):
     cncf = re.fullmatch(r"cncf[/-](.+)", slug, re.IGNORECASE)
     if cncf:
         return cncf_sources(cncf.group(1))
-    if slug[:5].lower() == "cncf-":
-        return cncf_sources(slug[5:])
     if norm(slug) in ("gcp", "googlecloudplatform"):
         slug = "google-cloud"
     gcp = re.fullmatch(r"(?:gcp/|gcp-|google-cloud-)(.+)", slug, re.IGNORECASE)
