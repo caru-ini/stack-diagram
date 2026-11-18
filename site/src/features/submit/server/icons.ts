@@ -4,11 +4,14 @@ import type { Meta } from "./meta.ts";
 import { pngSize } from "./png.ts";
 import { readAtMost } from "./read.ts";
 
-// Curated sets only: a wider GitHub prefix would let anyone host any image here.
+// Curated sets only, each on a fixed branch or commit: a wider GitHub prefix or any ref would let
+// anyone host any image here.
 export const ICON_PREFIXES = [
   "https://svgl.app/library/",
   "https://cdn.jsdelivr.net/gh/gilbarbara/logos/logos/",
   "https://raw.githubusercontent.com/devicons/devicon/master/icons/",
+  "https://raw.githubusercontent.com/kubernetes/community/307ae50e8e4246de172f195c73e3f026b4f0c7ff/icons/svg/",
+  "https://raw.githubusercontent.com/cncf/artwork/bffd512a8b625f15cf5f8e0427469380b5768e90/projects/",
 ] as const;
 
 export const MAX_ICON_FETCHES = 24;

@@ -35,11 +35,13 @@ function serve(respond: (url: string) => Response) {
 }
 
 describe("allowedIconUrl", () => {
-  it("takes https URLs under the three prefixes", () => {
+  it("takes https URLs under the curated prefixes", () => {
     for (const url of [
       "https://svgl.app/library/hono.svg",
       "https://cdn.jsdelivr.net/gh/gilbarbara/logos/logos/vercel-icon.svg",
       "https://raw.githubusercontent.com/devicons/devicon/master/icons/go/go-original.svg",
+      "https://raw.githubusercontent.com/kubernetes/community/307ae50e8e4246de172f195c73e3f026b4f0c7ff/icons/svg/resources/unlabeled/pod.svg",
+      "https://raw.githubusercontent.com/cncf/artwork/bffd512a8b625f15cf5f8e0427469380b5768e90/projects/cilium/icon/color/cilium_icon-color.svg",
     ]) {
       expect(allowedIconUrl(url)).toBe(url);
     }
@@ -57,6 +59,8 @@ describe("allowedIconUrl", () => {
       "https://raw.githubusercontent.com/someone/repo/main/logo.svg",
       "https://raw.githubusercontent.com/devicons/devicon/0123abc/icons/go/go-original.svg",
       "https://raw.githubusercontent.com/devicons/devicon/master/icons/../../fork/x.svg",
+      "https://raw.githubusercontent.com/kubernetes/community/0123abc/icons/svg/resources/unlabeled/pod.svg",
+      "https://raw.githubusercontent.com/cncf/artwork/0123abc/projects/cilium/icon/color/cilium_icon-color.svg",
       "javascript:alert(1)",
       "not a url",
     ]) {
