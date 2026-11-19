@@ -4,6 +4,8 @@
 [![License](https://img.shields.io/github/license/caru-ini/stack-diagram)](LICENSE)
 [![skills.sh](https://skills.sh/b/caru-ini/stack-diagram)](https://skills.sh/caru-ini/stack-diagram)
 
+**English** | [日本語](README.ja.md) | [简体中文](README.zh-CN.md) | [한국어](README.ko.md)
+
 Describe your stack in a sentence. Get an architecture diagram with official logos.
 
 <picture>
