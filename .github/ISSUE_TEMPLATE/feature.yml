@@ -1,0 +1,16 @@
+name: Feature
+description: A new feature, output format, or change to how diagrams or the gallery look.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What you are trying to do and why it doesn't work today.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Idea
+      description: What you would like instead. Don't open a pull request unless a maintainer asks for one here.

@@ -1,0 +1,21 @@
+name: Bug
+description: The skill or the gallery does something wrong.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what you got. Paste the error or attach the PNG.
+    validations:
+      required: true
+  - type: textarea
+    id: prompt
+    attributes:
+      label: Prompt or command
+      description: The prompt you gave the agent, or the script command you ran.
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Agent, OS and Python version, or the gallery page URL.

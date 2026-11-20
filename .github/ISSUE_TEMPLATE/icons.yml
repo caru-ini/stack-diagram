@@ -1,0 +1,15 @@
+name: Icons
+description: Logos the skill can't fetch, or a new icon source.
+body:
+  - type: textarea
+    id: icons
+    attributes:
+      label: Icons
+      description: The vendors, projects or products, and where their official icons are published.
+    validations:
+      required: true
+  - type: input
+    id: license
+    attributes:
+      label: License
+      description: The license or usage terms of those icons, with a link.
