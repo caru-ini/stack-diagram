@@ -1,16 +1,16 @@
 # stack-diagram
 
 [![Release](https://img.shields.io/github/v/release/caru-ini/stack-diagram)](https://github.com/caru-ini/stack-diagram/releases/latest)
-[![License](https://img.shields.io/github/license/caru-ini/stack-diagram)](LICENSE)
+[![License](https://img.shields.io/github/license/caru-ini/stack-diagram)](../LICENSE)
 [![skills.sh](https://skills.sh/b/caru-ini/stack-diagram)](https://skills.sh/caru-ini/stack-diagram)
 
-[English](README.md) | [日本語](README.ja.md) | **简体中文** | [한국어](README.ko.md)
+[English](../README.md) | [日本語](README.ja.md) | **简体中文** | [한국어](README.ko.md)
 
 用一句话描述你的技术栈，就能得到一张带官方 Logo 的架构图。
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/hero-dark.png">
-  <img src="docs/hero.png" alt="架构图：用户通过 HTTPS 访问 Vercel 上的 Next.js；Next.js 通过 RPC 调用同一 Vercel 部署中的 Hono API；Hono 通过 SQL 查询 Neon，并调用 Clerk 管理会话、调用 Stripe 处理支付；GitHub Actions 负责部署" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="hero-dark.png">
+  <img src="hero.png" alt="架构图：用户通过 HTTPS 访问 Vercel 上的 Next.js；Next.js 通过 RPC 调用同一 Vercel 部署中的 Hono API；Hono 通过 SQL 查询 Neon，并调用 Clerk 管理会话、调用 Stripe 处理支付；GitHub Actions 负责部署" width="100%">
 </picture>
 
 > Diagram our stack: Next.js and a Hono API on Vercel. Postgres on Neon, auth with Clerk, payments with Stripe. GitHub Actions deploys.
@@ -27,16 +27,16 @@ npx skills add caru-ini/stack-diagram
   <tr>
     <td width="50%" valign="top">
       <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="docs/tooling-dark.png">
-        <img src="docs/tooling.png" alt="Monorepo 开发工具架构图：开发者推送到 GitHub Actions，由它运行 Turborepo 并发布到 npm；在 pnpm workspace 中，Lefthook 在每次提交前运行 Biome，Turborepo 运行 Biome 和 Vitest" width="100%">
+        <source media="(prefers-color-scheme: dark)" srcset="tooling-dark.png">
+        <img src="tooling.png" alt="Monorepo 开发工具架构图：开发者推送到 GitHub Actions，由它运行 Turborepo 并发布到 npm；在 pnpm workspace 中，Lefthook 在每次提交前运行 Biome，Turborepo 运行 Biome 和 Vitest" width="100%">
       </picture>
       <p><b>不只是云服务，开发工具也能画</b></p>
       <blockquote>Draw our monorepo tooling: a pnpm workspace with Turborepo, Biome, Vitest and Lefthook. GitHub Actions runs CI and publishes to npm.</blockquote>
     </td>
     <td width="50%" valign="top">
       <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="docs/ai-dark.png">
-        <img src="docs/ai.png" alt="AI 应用架构图：用户向 Vercel 上的 Next.js 提问；Next.js 在 Supabase pgvector 中进行向量搜索，并把提示词发送给 Claude；Inngest 每晚同步 Notion 文档，并把嵌入向量存入 Supabase" width="100%">
+        <source media="(prefers-color-scheme: dark)" srcset="ai-dark.png">
+        <img src="ai.png" alt="AI 应用架构图：用户向 Vercel 上的 Next.js 提问；Next.js 在 Supabase pgvector 中进行向量搜索，并把提示词发送给 Claude；Inngest 每晚同步 Notion 文档，并把嵌入向量存入 Supabase" width="100%">
       </picture>
       <p><b>AI 应用</b></p>
       <blockquote>Draw our docs chatbot: Next.js on Vercel searches Supabase pgvector and answers with Claude. Inngest syncs Notion every night.</blockquote>
@@ -45,8 +45,8 @@ npx skills add caru-ini/stack-diagram
   <tr>
     <td colspan="2" valign="top">
       <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="docs/aws-dark.png">
-        <img src="docs/aws.png" alt="AWS 架构图：用户通过 HTTPS 访问 CloudFront；CloudFront 从 S3 提供静态路径，并把 API 路径转发到 VPC 公有子网中的 ALB；ALB 转发到私有子网中的 Fargate，Fargate 通过 SQL 查询 RDS，并使用 ElastiCache 作为缓存" width="100%">
+        <source media="(prefers-color-scheme: dark)" srcset="aws-dark.png">
+        <img src="aws.png" alt="AWS 架构图：用户通过 HTTPS 访问 CloudFront；CloudFront 从 S3 提供静态路径，并把 API 路径转发到 VPC 公有子网中的 ALB；ALB 转发到私有子网中的 Fargate，Fargate 通过 SQL 查询 RDS，并使用 ElastiCache 作为缓存" width="100%">
       </picture>
       <p><b>AWS，使用 AWS 官方图标</b></p>
       <blockquote>Draw our app on AWS: CloudFront in front of S3 and an ALB in a public subnet. Fargate, RDS and ElastiCache sit in a private subnet.</blockquote>
@@ -55,8 +55,8 @@ npx skills add caru-ini/stack-diagram
   <tr>
     <td colspan="2" valign="top">
       <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="docs/gcp-dark.png">
-        <img src="docs/gcp.png" alt="Google Cloud 架构图：用户通过 HTTPS 访问 Cloud Load Balancing；负载均衡器从 Cloud Storage 提供静态路径，并把 API 路径转发到 VPC 内某一区域中的 GKE；GKE 通过 SQL 查询 Cloud SQL，并使用 Memorystore 作为缓存" width="100%">
+        <source media="(prefers-color-scheme: dark)" srcset="gcp-dark.png">
+        <img src="gcp.png" alt="Google Cloud 架构图：用户通过 HTTPS 访问 Cloud Load Balancing；负载均衡器从 Cloud Storage 提供静态路径，并把 API 路径转发到 VPC 内某一区域中的 GKE；GKE 通过 SQL 查询 Cloud SQL，并使用 Memorystore 作为缓存" width="100%">
       </picture>
       <p><b>Google Cloud，使用 Google 官方图标</b></p>
       <blockquote>Draw our app on Google Cloud: a global load balancer in front of Cloud Storage and GKE. GKE, Cloud SQL and Memorystore run in one region of a VPC.</blockquote>
@@ -65,8 +65,8 @@ npx skills add caru-ini/stack-diagram
   <tr>
     <td colspan="2" valign="top">
       <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="docs/azure-dark.png">
-        <img src="docs/azure.png" alt="Azure 架构图：用户通过 HTTPS 访问 Azure Front Door；Front Door 从 Azure Blob Storage 提供静态路径，并把 API 路径转发到日本东部区域的 Azure App Service；App Service 通过虚拟网络中的专用终结点，以 SQL 查询 Azure SQL Database，并使用 Azure Managed Redis 作为缓存" width="100%">
+        <source media="(prefers-color-scheme: dark)" srcset="azure-dark.png">
+        <img src="azure.png" alt="Azure 架构图：用户通过 HTTPS 访问 Azure Front Door；Front Door 从 Azure Blob Storage 提供静态路径，并把 API 路径转发到日本东部区域的 Azure App Service；App Service 通过虚拟网络中的专用终结点，以 SQL 查询 Azure SQL Database，并使用 Azure Managed Redis 作为缓存" width="100%">
       </picture>
       <p><b>Azure，使用 Microsoft 官方图标</b></p>
       <blockquote>Draw our app on Azure: Front Door in front of Blob Storage and App Service. App Service reaches Azure SQL and Managed Redis through private endpoints in a VNet.</blockquote>
@@ -78,20 +78,20 @@ npx skills add caru-ini/stack-diagram
 
 每张图都会同时生成浅色和深色两种主题。图块始终保持白色，Logo 因此能保留原本的颜色；分组标签则会换成品牌的深色主题 Logo。
 
-<img src="docs/light-dark.png" alt="沿对角线切开的 Monorepo 开发工具架构图：左上为浅色主题，右下为深色主题" width="100%">
+<img src="light-dark.png" alt="沿对角线切开的 Monorepo 开发工具架构图：左上为浅色主题，右下为深色主题" width="100%">
 
 ## 以 Artifact 形式分享
 
 图表是一个内嵌了字体和 Logo 的 HTML 文件，无需联网即可在任何地方显示。你可以把它发布为 Claude Artifact 并分享链接，也可以直接放进代码仓库或 Wiki。PNG 和 React 组件也都由这个文件渲染而来。
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/html-page-dark.png">
-  <img src="docs/html-page.png" alt="文档问答机器人的架构图，以 HTML 页面形式在浏览器窗口中打开，包含标题、简短说明、图表、图例和页脚" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="html-page-dark.png">
+  <img src="html-page.png" alt="文档问答机器人的架构图，以 HTML 页面形式在浏览器窗口中打开，包含标题、简短说明、图表、图例和页脚" width="100%">
 </picture>
 
 ## 分享到图库
 
-画完图后，智能体会询问一次是否要把图发布到公开图库 <https://stacks.caru.moe>。它会先展示将要公开的内容（浅色和深色 PNG、英文标题、技术栈和显示名称），只有在你两次回答“是”之后才会发布。你的提示词不会被发送。GitHub 登录是可选的，且不会公开显示，它的唯一作用是让你日后可以删除帖子。网站源码位于 [`site/`](site)。
+画完图后，智能体会询问一次是否要把图发布到公开图库 <https://stacks.caru.moe>。它会先展示将要公开的内容（浅色和深色 PNG、英文标题、技术栈和显示名称），只有在你两次回答“是”之后才会发布。你的提示词不会被发送。GitHub 登录是可选的，且不会公开显示，它的唯一作用是让你日后可以删除帖子。网站源码位于 [`site/`](../site)。
 
 ## 特点
 
