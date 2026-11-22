@@ -88,6 +88,12 @@ python3 scripts/build.py my-diagram.html <icons-dir> out.html --fonts <skill>/as
 
 Icons are referenced in markup as `%%ICON_<name>%%`; fonts as `%%FONT_DISPLAY%%` (Geist) / `%%FONT_JBM%%` (JetBrains Mono). The build fails loudly on unresolved tokens. Keep every color and font behind the CSS custom properties already in the template — tweak the tokens, not scattered values.
 
+**Never read a built file whole.** Its two font lines alone are about 80K characters of base64, and each icon adds 1–5K more, enough to flood the context window. To change an existing diagram, edit the draft and rebuild. When only the built file exists, read it with the data URIs cut short, then edit its markup in place; a new icon goes in as `%%ICON_<name>%%`, and running the built file through `build.py` again fills it in.
+
+```bash
+sed -E 's#(;base64,)[A-Za-z0-9+/=]{64,}#\1...#g' out.html
+```
+
 ## Step 5 — Verify by looking
 
 Render and actually read the image:
