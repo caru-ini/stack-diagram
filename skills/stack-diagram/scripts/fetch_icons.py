@@ -14,6 +14,8 @@ Spec forms:
   name:databricks/Product -> Databricks product icon (e.g. uc:databricks/unity-catalog)
   name:k8s/Resource -> official Kubernetes icon (e.g. pod:k8s/pod, web:k8s/deployment, lb:k8s/ingress)
   name:cncf/Project -> official CNCF project icon (e.g. cilium:cncf/cilium, argo:cncf/argo, otel:cncf/opentelemetry)
+  name:tencent/Product -> official Tencent Cloud icon (e.g. cvm:tencent/cvm, cos:tencent/cos)
+  name:aliyun/Product -> Alibaba Cloud design center icon (e.g. ecs:aliyun/ecs, oss:aliyun/oss)
 
 Sources tried in order:
   1. svgl              api.svgl.app?search={s} -> route (light variant when split)
@@ -43,6 +45,14 @@ fetch the Kubernetes mark through the chain.
 
 cncf/ specs and the slugs cncf-* read official CNCF project artwork
 (github.com/cncf/artwork). Bare names in CNCF_PROJECTS try CNCF artwork first, before the chain.
+
+tencent/ specs and the slugs tencent-* and tencentcloud-* read Tencent Cloud's own product icon
+package (cloud.tencent.com/act/event/icons): the SVG zip that page offers, whose name carries the
+content hash of that release. It holds product icons only, no Tencent Cloud mark.
+
+aliyun/ specs (also alibaba/) and the slugs aliyun-*, alibaba-* and alibabacloud-* read the Alibaba
+Cloud design center's icon set on iconfont.cn, Alibaba's own platform: Alibaba publishes no icon
+package (help.aliyun.com says so), and its design center publishes the products there instead.
 
 svgl is matched by normalized title equality (search is fuzzy — a loose match would
 silently ship the wrong brand's logo, so non-exact hits fall through to next source).
@@ -253,6 +263,42 @@ CNCF_PROJECTS = {
     "vitess": ("vitess", "vitess-icon"),
 }
 PACKAGES = {}
+
+# Tencent Cloud's page (cloud.tencent.com/act/event/icons) hands out a zip whose name carries the
+# content hash of that release, so this URL is pinned: a new release lands under a new URL.
+TENCENT_ICONS = ("https://dscache.tencent-cloud.cn/upload/uploader/"
+                 "tencent_cloud_product_icons_svg-cabb63b49a754a7417b973bec8724623f0414854.zip")
+TENCENT_ICON_RE = re.compile(r"tencent_cloud_product_icons_en/(.+)\.svg")
+TENCENT_ALIASES = {
+    "cvm": "Cloud Virtual Machine", "as": "Auto Scaling", "cbs": "Cloud Block Storage",
+    "cfs": "Cloud File Storage", "cos": "Cloud Object Storage", "lighthouse": "TencentCloud Lighthouse",
+    "tke": "Tencent Kubernetes Engine", "eks": "Elastic Kubernetes Service",
+    "tcr": "Tencent Container Registry", "scf": "Serverless Cloud Function",
+    "vpc": "Virtual Private Cloud", "clb": "Cloud Load Balancer", "nat": "NAT Gateway",
+    "eip": "Elastic IP", "ipv6": "Elastic IPv6", "ccn": "Cloud Connect Network",
+    "dc": "Direct Connect", "cdn": "Content Delivery Network",
+    "ecdn": "Enterprise Content Delivery Network", "eo": "TencentCloud EdgeOne",
+    "cdb": "TencentDB for MySQL", "mysql": "TencentDB for MySQL", "redis": "TencentDB for Redis",
+    "mongodb": "TencentDB for MongoDB", "postgresql": "TencentDB for PostgreSQL",
+    "sqlserver": "TencentDB for SQL Server", "mariadb": "TencentDB for MariaDB",
+    "cynosdb": "TencentDB for CynosDB", "tdsqlc": "Cloud Native Database TDSQL-C",
+    "ckafka": "TDMQ for CKafka", "cls": "Cloud Log Service", "cam": "Cloud Access Management",
+    "waf": "Web Application Firewall", "cfw": "Cloud Firewall", "ddos": "Anti-DDoS",
+    "bh": "Bastion Host", "bastionhost": "Bastion Host", "es": "Elasticsearch Service",
+    "emr": "Elastic MapReduce", "apigw": "API Gateway", "tse": "Tencent Cloud Elastic Microservice",
+    "im": "Instant Messaging", "vod": "Video on Demand", "css": "Cloud Streaming Services",
+    "live": "Live Video Broadcasting", "asr": "Automatic Speech Recognition", "tts": "Text To Speech",
+    "ocr": "Optical Character Recognition", "sms": "Short Message Service",
+}
+# Alibaba Cloud publishes no icon package; its design center keeps the product icons in a
+# collection on iconfont.cn, Alibaba's own platform. 21408 (updated 2024-11) is the full set.
+ALIBABA_ICONS_API = "https://www.iconfont.cn/api/collection/detail.json?id=21408"
+ALIBABA_ALIASES = {
+    "rds": "mysql", "ack": "csk", "redis": "kvstore", "tair": "kvstore", "kafka": "alikafka",
+    "tablestore": "ots", "maxcompute": "odps", "dataworks": "dide", "emr": "emapreduce",
+    "sms": "dysms", "clickhouse": "clickhouse-云数据库ClickHouse", "spark": "spark-数据洞察",
+    "bpstudio": "bpstudio-云架构设计工具",
+}
 
 def get(url, timeout=15):
     req = urllib.request.Request(url, headers=UA)
@@ -475,6 +521,80 @@ def cncf_sources(query):
     print(f"CNCF {query!r} is not an icon name. Names: {', '.join(sorted(CNCF_PROJECTS))}")
     return []
 
+@functools.lru_cache(maxsize=1)
+def tencent_index():
+    """Tencent Cloud's package as {normalized name: (name, zip#member)}, keyed by the English names."""
+    PACKAGES[TENCENT_ICONS] = zipfile.ZipFile(io.BytesIO(get(TENCENT_ICONS)))
+    files = [f for f in PACKAGES[TENCENT_ICONS].namelist() if TENCENT_ICON_RE.fullmatch(f)]
+    # a -1 file is an alternate version of the same product; the plain one is the name's owner
+    index = {}
+    for f in sorted(files, key=lambda f: (bool(re.search(r"-\d+\.svg$", f)), f)):
+        name = re.sub(r"\s+", " ", TENCENT_ICON_RE.fullmatch(f).group(1))
+        index.setdefault(norm(name), (name, f"{TENCENT_ICONS}#{f}"))
+    return index
+
+def tencent_sources(query):
+    """Exact match on a product name or a short form. A miss lists every name, as for AWS."""
+    try:
+        index = tencent_index()
+    except (OSError, zipfile.BadZipFile, http.client.HTTPException) as e:
+        print(f"Tencent Cloud icon package unavailable: {e}")
+        return []
+    hit = index.get(norm(TENCENT_ALIASES.get(norm(query), query)))
+    if hit:
+        return [("tencent", hit[1], None)]
+    print(f"Tencent Cloud {query!r} is not a name in the package. "
+          f"Names: {', '.join(sorted(v[0] for v in index.values()))}")
+    return []
+
+class Shelf:
+    """An icon set held in memory, answering read(member) the way a zip package does, so an API
+    that returns markup rather than files fits the same fetch path."""
+    def __init__(self): self.icons = {}
+    def read(self, member): return self.icons[member]
+
+@functools.lru_cache(maxsize=1)
+def alibaba_index():
+    """The design center's set as {normalized name: (name, api#slug)}. iconfont answers with the
+    whole collection at once, including each icon's markup and the preview class around it, which
+    is dropped: it sizes the icon to 1em and paints it currentColor, neither of which is the mark."""
+    shelf = Shelf()
+    PACKAGES[ALIBABA_ICONS_API] = shelf
+    index = {}
+    for it in json.loads(get(ALIBABA_ICONS_API).decode("utf-8"))["data"]["icons"]:
+        name = re.sub(r"\s+", " ", it.get("name") or "").strip()
+        svg = it.get("show_svg") or ""
+        root = re.match(r"<svg\b[^>]*>", svg)
+        if not name or not root:
+            continue
+        box = re.search(r'viewBox="([^"]+)"', root.group())
+        slug = name.split(" ")[0]
+        shelf.icons[slug] = (f'<svg xmlns="http://www.w3.org/2000/svg" '
+                             f'viewBox="{box.group(1) if box else "0 0 1024 1024"}">'
+                             f'{svg[root.end():]}').encode()
+        # "ecs 云服务器ECS": either side finds it; "sls日志服务" and "ram访问控制" normalize to sls/ram
+        keys = {norm(name)} | {norm(p) for p in (slug, name[len(slug):])}
+        if name.endswith("LOGO"):      # the vendor mark: 英文LOGO is the international one
+            keys = {"logo", "logo-en"} if "英文" in name else {"logo-zh"}
+        for k in keys - {""}:
+            index.setdefault(k, (name, f"{ALIBABA_ICONS_API}#{slug}"))
+    return index
+
+def alibaba_sources(query):
+    """Exact match on a product's slug, its Chinese name or a short form. A miss lists every slug,
+    as for Databricks."""
+    try:
+        index = alibaba_index()
+    except (OSError, ValueError, KeyError, http.client.HTTPException) as e:
+        print(f"Alibaba Cloud icon set unavailable: {e}")
+        return []
+    hit = index.get(norm(ALIBABA_ALIASES.get(norm(query), query)))
+    if hit:
+        return [("alibaba", hit[1], None)]
+    print(f"Alibaba Cloud {query!r} is not a name in the set. "
+          f"Slugs: {', '.join(sorted({u.split('#')[1] for _, u in index.values()}))}")
+    return []
+
 def sources(slug):
     # concept icons: slug "lucide/<icon-name>" -> Lucide line icon (browse: lucide.dev/icons)
     if slug.startswith("lucide/"):
@@ -501,6 +621,12 @@ def sources(slug):
     cncf = re.fullmatch(r"cncf[/-](.+)", slug, re.IGNORECASE)
     if cncf:
         return cncf_sources(cncf.group(1))
+    tencent = re.fullmatch(r"(?:tencent|tencentcloud)[/-](.+)", slug, re.IGNORECASE)
+    if tencent:
+        return tencent_sources(tencent.group(1))
+    alibaba = re.fullmatch(r"(?:alibaba|aliyun|alibabacloud)[/-](.+)", slug, re.IGNORECASE)
+    if alibaba:
+        return alibaba_sources(alibaba.group(1))
     if norm(slug) in ("gcp", "googlecloudplatform"):
         slug = "google-cloud"
     gcp = re.fullmatch(r"(?:gcp/|gcp-|google-cloud-)(.+)", slug, re.IGNORECASE)
